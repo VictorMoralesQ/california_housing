@@ -2,6 +2,7 @@ from pathlib import Path
 import pandas as pd
 import tarfile
 import urllib.request
+from sklearn.model_selection import train_test_split
 
 def load_housing_data():
     """Esta función descarga y carga los datos de vivienda desde un archivo tarball remoto.
@@ -30,3 +31,11 @@ def load_housing_data():
     return housing
 
 housing = load_housing_data()
+
+# Now, let's split the dataset into a training set and a test set
+train_set , test_set = train_test_split(housing, test_size=0.2, 
+                                        random_state=42)
+train_set.to_csv("/Users/vmxrls/Library/CloudStorage/Dropbox/Projects/california_housing/data/processed/train_set.csv")
+test_set.to_csv("/Users/vmxrls/Library/CloudStorage/Dropbox/Projects/california_housing/data/processed/test_set.csv")
+
+
