@@ -22,4 +22,10 @@ housing.describe()
 housing["income_cat"] = pd.cut(housing["median_income"], 
                                bins=[0., 1.5, 3.0, 4.5, 6., np.inf],
                                labels=[1, 2, 3, 4, 5])
-housing = housing.to_csv("/Users/vmxrls/Library/CloudStorage/Dropbox/Projects/california_housing/data/interim/housing.csv")
+
+# Aqui hay que recoger la copia de la variable housing del archivo make_dataset.py
+housing = pd.read_csv("/Users/vmxrls/Library/CloudStorage/Dropbox/Projects/california_housing/data/processed/train_set.csv")
+# let's see how attributes are correlated with the median_house_value
+corr_matrix = housing.corr()
+print(corr_matrix)
+
