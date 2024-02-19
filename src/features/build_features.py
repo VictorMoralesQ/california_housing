@@ -33,6 +33,8 @@ housing["rooms_per_house"] = housing["total_rooms"] / housing["households"]
 housing["bedrooms_ratio"] = housing["total_bedrooms"] / housing["total_rooms"]
 housing["people_per_house"] = housing["population"] / housing["households"]
 
+housing.to_csv("/Users/vmxrls/Library/CloudStorage/Dropbox/Projects/california_housing/data/processed/train_set.csv")
+
 # and then we look at the correlation matrix again
 # the new bedrooms_ratio is much more correlated that the number of rooms or bedrooms
 # houses with less bedroom ratio tend to be more expensive
@@ -40,3 +42,4 @@ housing["people_per_house"] = housing["population"] / housing["households"]
 # obviously the larger the houses, the more expensive they are
 corr_matrix = housing.corr(numeric_only=True)
 print(corr_matrix["median_house_value"].sort_values(ascending=False))
+
