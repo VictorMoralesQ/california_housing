@@ -12,33 +12,6 @@ from sklearn.compose import ColumnTransformer, make_column_selector
 from sklearn.cluster import KMeans
 from sklearn.metrics.pairwise import rbf_kernel
 
-def load_housing_data():
-    """Esta función descarga y carga los datos de vivienda desde un archivo tarball remoto.
-
-    Returns:
-        DataFrame: Un DataFrame de pandas que contiene los datos de vivienda.
-    """
-    # Ruta del directorio donde se encuentra el script make_dataset.py
-    current_directory = Path(__file__).resolve().parent
-
-    # Rutas de los archivos y carpetas
-    tarball_path = current_directory / "../../data/raw/housing.tgz"
-    csv_file_path = current_directory / "../../data/raw/housing/housing.csv"
-
-    # Descarga y extrae el archivo tarball si no existe
-    if not tarball_path.is_file():
-        tarball_path.parent.mkdir(parents=True, exist_ok=True)
-        url = "https://github.com/ageron/data/raw/main/housing.tgz"
-        urllib.request.urlretrieve(url, tarball_path)
-        with tarfile.open(tarball_path) as housing_tarball:
-            housing_tarball.extractall(path=tarball_path.parent)
-
-    # Lee el archivo CSV
-    housing = pd.read_csv(csv_file_path)
-
-    return housing
-
-housing = load_housing_data()
 
 # Now, let's split the dataset into a training set and a test set
 housing = pd.read_csv("/Users/vmxrls/Library/CloudStorage/Dropbox/Projects/california_housing/data/interim/housing.csv")
@@ -175,4 +148,6 @@ preprocessing = ColumnTransformer([
     remainder=default_num_pipeline)
 
 housing_prepared = preprocessing.fit_transform(housing)
+housing_prepared = pd.DataFrame(housing_prepared, columns = preprocessing.get_feature_names_out())
+housing_prepared.to_csv("/Users/vmxrls/Library/CloudStorage/Dropbox/Projects/california_housing/data/processed/train_set_prepared.csv")
 print(preprocessing.get_feature_names_out())
