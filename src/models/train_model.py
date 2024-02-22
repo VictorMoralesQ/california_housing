@@ -1,8 +1,9 @@
 
+from random import randint
 import pandas as pd
 from sklearn.linear_model import LinearRegression
-from sklearn.model_selection import cross_val_score
-from sklearn.pipeline import make_pipeline
+from sklearn.model_selection import RandomizedSearchCV, cross_val_score
+from sklearn.pipeline import Pipeline, make_pipeline
 from sklearn.metrics import mean_squared_error
 from sklearn.tree import DecisionTreeRegressor
 from sklearn.ensemble import RandomForestRegressor
@@ -59,4 +60,28 @@ print(forest_rmse)
 
 # The training error is much lower than the validation error, which usually means that the model has overfit the training set. 
 # Another possible explanation may be that there's a mismatch between the training data and the validation data, but it's not the case here, 
-# since both came from the same dataset that we shuffled and split in two parts.                                                                                                                                                                                                                                                 
+# since both came from the same dataset that we shuffled and split in two parts.           
+
+# let's fine-tune our model in order to get the best hyperparameters to get the minimum rmse
+full_pipeline = Pipeline([
+    ("preprocessing", preprocessing),
+    ("random_forest", RandomForestRegressor(random_state=42)),
+])                                                                                                                                                                                                                                      
+
+param_distribs = {'preprocessing__geo__n_clusters': randint(low=3, high=50),
+                  'random_forest__max_features': randint(low=2, high=20)}
+
+rnd_search = RandomizedSearchCV(
+    full_pipeline, param_distributions=param_distribs, n_iter=10, cv=3,
+    scoring='neg_root_mean_squared_error', random_state=42)
+
+rnd_search.fit(housing, housing_labels)
+
+# lastly, we can analyze the best models and how there features are involved when predicting
+final_model = rnd_search.best_estimator_
+feature_importances = final_model["random_forest"].feature_importances_
+
+print(sorted(zip(feature_importances,
+                 final_model["preprocessing"].get_feature_names_out()),
+             reverse=True))
+
